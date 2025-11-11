@@ -1,0 +1,297 @@
+:root {
+    --glass-bg: rgba(255, 255, 255, .18);
+    --glass-br: 16px;
+    --glass-blur: 12px;
+    --shadow-1: 0 26px 48px rgba(0, 0, 0, .20);
+    --max-card: 520px;
+}
+
+.vh-app {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+}
+
+/* ===== Hero Slider ===== */
+.kiosk-hero {
+    position: relative;
+    overflow: hidden;
+}
+
+.kiosk-hero .swiper {
+    height: 100%;
+}
+
+.kiosk-hero .swiper-slide {
+    position: relative;
+    background: #dfe9f3;
+}
+
+.bg-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    /* ขยายพอดีกับจอ */
+    background-position: center;
+    /* จัดกึ่งกลาง */
+    background-repeat: no-repeat;
+    image-rendering: -webkit-optimize-contrast;
+    /* Safari/Chrome render ชัดขึ้น */
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, .12), rgba(0, 0, 0, .26) 40%, rgba(0, 0, 0, .55));
+}
+
+/* ===== Glass Card (center) ===== */
+.glass-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+}
+
+.glass {
+    width: min(92vw, var(--max-card));
+    border-radius: var(--glass-br);
+    background: var(--glass-bg);
+    border: 1px solid rgba(255, 255, 255, .28);
+    box-shadow: var(--shadow-1);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    padding: 18px;
+}
+
+/* Title */
+.brand-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.brand-row img {
+    height: 42px;
+}
+
+.brand-name {
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.brand-sub {
+    font-size: .8rem;
+    opacity: .85;
+}
+
+.city-pill {
+    margin-left: auto;
+    background: rgba(255, 255, 255, .22);
+    color: #fff;
+    padding: .3rem .6rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: .75rem;
+}
+
+/* Clock */
+.clock {
+    color: #fff;
+    text-align: center;
+    margin: 6px 2px 14px;
+}
+
+.clock-time {
+    font-weight: 900;
+    letter-spacing: .02em;
+    line-height: 1;
+    font-size: clamp(42px, 9.5vw, 76px);
+}
+
+.clock-date {
+    opacity: .9;
+    font-weight: 600;
+}
+
+/* ===== Buttons (center + icon) ===== */
+.action {
+    display: grid;
+    gap: 12px;
+    justify-items: center;
+}
+
+.kiosk-btn {
+    text-decoration: none !important;
+    /* เอาเส้นใต้ลิงก์ออก */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 0;
+    border-radius: 14px;
+    color: #fff;
+    padding-block: 18px;
+    font-size: 1.25rem;
+    font-weight: 00;
+    letter-spacing: .02em;
+    width: min(88vw, 460px);
+    margin: 0 auto;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .12);
+    transition: transform .06s ease, filter .2s ease, box-shadow .2s ease;
+}
+
+.kiosk-btn:hover {
+    text-decoration: none !important;
+    /* hover ก็ไม่ให้ underline */
+}
+
+.kiosk-btn:active {
+    transform: scale(.98);
+}
+
+.kiosk-btn i {
+    font-size: 1.25em;
+    line-height: 0;
+}
+
+/* ไล่เฉด + โฮเวอร์ */
+.btn-reserve {
+    background: linear-gradient(180deg, #2e89f8, #2b7ddd);
+}
+
+.btn-reserve:hover {
+    filter: brightness(1.06);
+    box-shadow: 0 14px 28px rgba(43, 125, 221, .25);
+}
+
+.btn-checkin {
+    background: linear-gradient(180deg, #22a077, #1e946d);
+}
+
+.btn-checkin:hover {
+    filter: brightness(1.06);
+    box-shadow: 0 14px 28px rgba(30, 148, 109, .25);
+}
+
+.btn-checkout {
+    background: linear-gradient(180deg, #f08a39, #e67b2e);
+}
+
+.btn-checkout:hover {
+    filter: brightness(1.06);
+    box-shadow: 0 14px 28px rgba(230, 123, 46, .25);
+}
+
+/* bottom info */
+.helper {
+    width: min(92vw, var(--max-card));
+    margin: 12px auto 18px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.helper .tile {
+    background: rgba(255, 255, 255, .85);
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-weight: 700;
+    color: #2a3a55;
+    backdrop-filter: blur(5px);
+}
+
+.helper a {
+    color: #185adb;
+    text-decoration: none;
+}
+
+.helper a:hover {
+    text-decoration: underline;
+}
+
+.swiper-pagination-bullet {
+    background: rgba(255, 255, 255, .85);
+}
+
+@media (max-height:700px) {
+    .clock-time {
+        font-size: clamp(36px, 8.6vw, 64px);
+    }
+
+    .kiosk-btn {
+        padding-block: 16px;
+    }
+}
+
+.logo-img {
+    max-height: 100px;
+}
+
+.brand-text .brand-name {
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.brand-text .brand-sub {
+    font-size: 1rem;
+    opacity: .85;
+    color: #f1f1f1;
+    text-align: center;
+}
+
+.clock .time-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6px;
+    line-height: 1;
+}
+
+.clock .hours,
+.clock .minutes {
+    font-size: clamp(56px, 10vw, 96px);
+    font-weight: 700;
+}
+
+.clock .dots {
+    font-size: clamp(52px, 9vw, 84px);
+    padding: 0 4px;
+}
+
+.clock .side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 4px;
+}
+
+.clock .period {
+    font-size: 16px;
+    font-weight: 600;
+    color: #28004d;
+    /* สีชมพู */
+    margin-bottom: 4px;
+}
+
+.clock .seconds {
+    font-size: 14px;
+}
+
+.clock .calendar {
+    margin-top: 10px;
+    font-size: 1.3em;
+    font-weight: 500;
+    color: #000000;
+}
