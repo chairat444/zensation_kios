@@ -1,51 +1,153 @@
+/* ======================== VARIABLES (ปรับแก้สีหลัก) ======================== */
 :root {
     --glass-bg: rgba(255, 255, 255, .18);
     --glass-br: 16px;
     --glass-blur: 12px;
     --shadow-1: 0 26px 48px rgba(0, 0, 0, .20);
     --max-card: 520px;
+
+    /* สีหลัก */
+    --main-blue: #2b7ddd; /* สีฟ้าหลักสำหรับไอคอน/ปุ่มสำรอง */
+    --accent-color: #fce38a; /* สีเน้น (เหลืองทอง) สำหรับข้อความ/ไอคอนใน Footer */
+    --footer-glass-bg: rgba(255, 255, 255, .25);
+    --main-text-color: #fff;
 }
 
+/* ======================== 1. LAYOUT & HERO (ใช้ Grid Layout) ======================== */
 .vh-app {
-    min-height: 100vh;
-    display: grid;
-    grid-template-rows: 1fr auto;
-}
-
-/* ===== Hero Slider ===== */
-.kiosk-hero {
     position: relative;
+    min-height: 100vh;
+    display: grid; /* Layout หลัก: 1fr (Hero) และ auto (Footer) */
+    grid-template-rows: 1fr auto;
     overflow: hidden;
 }
 
-.kiosk-hero .swiper {
+/* Hero Slider Area (ใช้ 1fr) */
+.kiosk-hero {
+    position: relative;
+    overflow: hidden;
+    flex-grow: 1;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+}
+
+/* Swiper Container */
+.swiper {
+    width: 100%;
     height: 100%;
+    position: absolute;
+    inset: 0;
+    margin: 0;
 }
 
 .kiosk-hero .swiper-slide {
     position: relative;
-    background: #dfe9f3;
 }
 
+/* Background Image */
 .bg-img {
     position: absolute;
     inset: 0;
+    width: 100%;
+    height: 100%;
     background-size: cover;
-    /* ขยายพอดีกับจอ */
     background-position: center;
-    /* จัดกึ่งกลาง */
     background-repeat: no-repeat;
     image-rendering: -webkit-optimize-contrast;
-    /* Safari/Chrome render ชัดขึ้น */
+    transition: transform 1s ease;
 }
 
+/* Dark Overlay over background */
 .overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(180deg, rgba(0, 0, 0, .12), rgba(0, 0, 0, .26) 40%, rgba(0, 0, 0, .55));
+    z-index: 1;
 }
 
-/* ===== Glass Card (center) ===== */
+
+/* ======================== 2. HEADER & CLOCK (Top-Left/Top-Right) ======================== */
+.kiosk-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    padding: 24px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* Logo Top Left */
+.logo-top-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+}
+.logo-top-left .logo-img { max-height: 80px; }
+.logo-top-left .brand-sub {
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+/* Clock Top Right */
+.clock-top-right {
+    color: #fff;
+    text-align: right;
+    line-height: 1.1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+}
+/* ปรับ Time Display เพื่อรวม seconds และ period ไว้ในคอลัมน์ด้านขวา */
+.time-display {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+}
+.time-main {
+    font-size: clamp(40px, 6.5vw, 64px);
+    font-weight: 800;
+    letter-spacing: .02em;
+}
+
+/* เพิ่ม div สำหรับรวม Seconds และ Period */
+.time-side-wrap {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start; /* จัดให้อยู่ด้านบนสุดของแถว */
+    margin-top: 6px; /* จัดตำแหน่งให้ตรงกับ .time-main */
+    line-height: 1; /* กำหนด line-height ให้กระชับ */
+}
+
+/* ปรับขนาดวินาทีให้เล็กลง */
+.time-seconds {
+    font-size: 1.35em; /* ทำให้เล็กกว่า time-main มากๆ */
+    font-weight: 700;
+    opacity: 0.9;
+    letter-spacing: .02em;
+}
+
+/* ปรับขนาด AM/PM */
+.time-period {
+    font-size: 1.35em;
+    font-weight: 700;
+    margin-top: 2px; /* แยกเล็กน้อยจากวินาที */
+}
+
+.clock-date-lg {
+    font-size: 1.1rem;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+/* ======================== 3. GLASS CARD (Center) ======================== */
 .glass-wrap {
     position: absolute;
     inset: 0;
@@ -53,6 +155,7 @@
     align-items: center;
     justify-content: center;
     padding: 22px;
+    z-index: 2;
 }
 
 .glass {
@@ -63,235 +166,236 @@
     box-shadow: var(--shadow-1);
     backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
-    padding: 18px;
+    padding: 30px 18px;
+    z-index: 5;
 }
 
-/* Title */
-.brand-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #fff;
-    margin-bottom: 8px;
-}
-
-.brand-row img {
-    height: 42px;
-}
-
-.brand-name {
-    font-weight: 800;
-    letter-spacing: .04em;
-    text-transform: uppercase;
-    line-height: 1;
-}
-
-.brand-sub {
-    font-size: .8rem;
-    opacity: .85;
-}
-
-.city-pill {
-    margin-left: auto;
-    background: rgba(255, 255, 255, .22);
-    color: #fff;
-    padding: .3rem .6rem;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: .75rem;
-}
-
-/* Clock */
-.clock {
-    color: #fff;
+.glass-title {
     text-align: center;
-    margin: 6px 2px 14px;
+    color: #fff;
+    margin-bottom: 25px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, .25);
 }
+.glass-title .brand-name { font-size: 1.8rem; font-weight: 800; }
 
-.clock-time {
-    font-weight: 900;
-    letter-spacing: .02em;
-    line-height: 1;
-    font-size: clamp(42px, 9.5vw, 76px);
-}
-
-.clock-date {
-    opacity: .9;
-    font-weight: 600;
-}
-
-/* ===== Buttons (center + icon) ===== */
-.action {
-    display: grid;
-    gap: 12px;
-    justify-items: center;
-}
-
+/* Buttons Style */
+.action { display: grid; gap: 15px; justify-items: center; }
 .kiosk-btn {
+    padding-block: 22px;
+    /* font-size: 1.5rem; */
+    border-radius: 18px;
+    width: min(90vw, 480px);
+    font-weight: 700;
     text-decoration: none !important;
-    /* เอาเส้นใต้ลิงก์ออก */
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
     border: 0;
-    border-radius: 14px;
     color: #fff;
-    padding-block: 18px;
-    font-size: 1.25rem;
-    font-weight: 00;
     letter-spacing: .02em;
-    width: min(88vw, 460px);
     margin: 0 auto;
     box-shadow: 0 10px 24px rgba(0, 0, 0, .12);
-    transition: transform .06s ease, filter .2s ease, box-shadow .2s ease;
+    transition: transform .1s ease, filter .2s ease, box-shadow .2s ease;
+}
+.kiosk-btn:active { transform: scale(.98); }
+.kiosk-btn i { font-size: 1.3em; line-height: 0; }
+.btn-reserve { background: linear-gradient(180deg, #2e89f8, #2b7ddd); }
+.btn-checkin { background: linear-gradient(180deg, #22a077, #1e946d); }
+.btn-checkout { background: linear-gradient(180deg, #f08a39, #e67b2e); }
+
+/* ======================== 4. FOOTER (Glassmorphism 2-Row Layout) ======================== */
+
+.kiosk-footer-container {
+    width: 100%;
+    padding: 0 0 25px 0;
+    z-index: 10;
 }
 
-.kiosk-btn:hover {
-    text-decoration: none !important;
-    /* hover ก็ไม่ให้ underline */
+.helper-wrap {
+    width: min(92vw, 1000px);
+    margin: 0 auto;
+    padding: 20px 24px;
+    border-radius: 16px;
+
+    background: var(--footer-glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, .3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
 }
 
-.kiosk-btn:active {
-    transform: scale(.98);
-}
+        /* ===== Footer (ปรับปรุงล่าสุด - คงเดิม) ===== */
+        .kiosk-footer-container {
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            padding: 0 0 25px 0;
+            z-index: 10;
+        }
+        .helper-wrap {
+            width: min(92vw, 1000px);
+            margin: 0 auto;
+            padding: 20px 24px;
+            border-radius: 16px;
+            background: var(--footer-glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, .3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
+        }
+        .footer-message-row {
+            display: flex;
+            align-items: center;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, .3);
+            color: var(--main-text-color);
+            font-weight: 500;
+            font-size: 1.1rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+        }
+        .footer-message-row i {
+            font-size: 1.3em;
+            color: var(--accent-color);
+            margin-right: 12px;
+            line-height: 1;
+        }
+        .footer-contact-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .contact-block {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            min-width: 250px;
+        }
+        .contact-block.hours-block {
+            flex-grow: 0;
+            min-width: 180px;
+            max-width: 250px;
+        }
+        .contact-icon {
+            font-size: 1.5em;
+            margin-right: 15px;
+            color: var(--accent-color);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+        }
+        .info-details {
+            text-align: left;
+            color: var(--main-text-color);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+        }
+        .info-details .label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .8);
+            display: block;
+            line-height: 1;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .info-details .value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: block;
+            color: var(--main-text-color);
+        }
 
-.kiosk-btn i {
-    font-size: 1.25em;
-    line-height: 0;
-}
+        /* ======================== STYLES FOR QR MODAL (PREMIUM & ELEGANT) ======================== */
 
-/* ไล่เฉด + โฮเวอร์ */
-.btn-reserve {
-    background: linear-gradient(180deg, #2e89f8, #2b7ddd);
-}
+        .modal-content-custom {
+            /* พื้นหลังโปร่งใสแบบ Glassmorphism ที่ดูหรูหรา */
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(15px); /* เพิ่ม Blur ให้มากขึ้น */
+            -webkit-backdrop-filter: blur(15px);
 
-.btn-reserve:hover {
-    filter: brightness(1.06);
-    box-shadow: 0 14px 28px rgba(43, 125, 221, .25);
-}
+            border-radius: 20px; /* เพิ่มความโค้งมน */
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.35); /* เพิ่มเงาให้เข้มและมีมิติ */
 
-.btn-checkin {
-    background: linear-gradient(180deg, #22a077, #1e946d);
-}
-
-.btn-checkin:hover {
-    filter: brightness(1.06);
-    box-shadow: 0 14px 28px rgba(30, 148, 109, .25);
-}
-
-.btn-checkout {
-    background: linear-gradient(180deg, #f08a39, #e67b2e);
-}
-
-.btn-checkout:hover {
-    filter: brightness(1.06);
-    box-shadow: 0 14px 28px rgba(230, 123, 46, .25);
-}
-
-/* bottom info */
-.helper {
-    width: min(92vw, var(--max-card));
-    margin: 12px auto 18px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.helper .tile {
-    background: rgba(255, 255, 255, .85);
-    border: 1px solid rgba(255, 255, 255, .35);
-    border-radius: 12px;
-    padding: 10px 14px;
-    font-weight: 700;
-    color: #2a3a55;
-    backdrop-filter: blur(5px);
-}
-
-.helper a {
-    color: #185adb;
-    text-decoration: none;
-}
-
-.helper a:hover {
-    text-decoration: underline;
-}
-
-.swiper-pagination-bullet {
-    background: rgba(255, 255, 255, .85);
-}
-
-@media (max-height:700px) {
-    .clock-time {
-        font-size: clamp(36px, 8.6vw, 64px);
-    }
-
-    .kiosk-btn {
-        padding-block: 16px;
-    }
-}
-
-.logo-img {
-    max-height: 100px;
-}
-
-.brand-text .brand-name {
-    font-weight: 800;
-    font-size: 1.3rem;
-    letter-spacing: .04em;
-    text-transform: uppercase;
-    color: #fff;
-}
-
-.brand-text .brand-sub {
-    font-size: 1rem;
-    opacity: .85;
-    color: #f1f1f1;
-    text-align: center;
-}
-
-.clock .time-row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 6px;
-    line-height: 1;
-}
-
-.clock .hours,
-.clock .minutes {
-    font-size: clamp(56px, 10vw, 96px);
-    font-weight: 700;
-}
-
-.clock .dots {
-    font-size: clamp(52px, 9vw, 84px);
-    padding: 0 4px;
-}
-
-.clock .side {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-left: 4px;
-}
-
-.clock .period {
-    font-size: 16px;
-    font-weight: 600;
-    color: #28004d;
-    /* สีชมพู */
-    margin-bottom: 4px;
-}
-
-.clock .seconds {
-    font-size: 14px;
-}
-
-.clock .calendar {
-    margin-top: 10px;
-    font-size: 1.3em;
-    font-weight: 500;
-    color: #000000;
-}
+            padding: 40px; /* เพิ่ม Padding */
+            text-align: center;
+            color: #fff; /* เปลี่ยนสีตัวอักษรหลักเป็นสีขาวเพื่อให้เข้ากับพื้นหลังโปร่งใส/เบลอ */
+        }
+        /* สไตล์สำหรับส่วนหัว (Title) */
+        .modal-header-custom {
+            border-bottom: none;
+            padding: 0 0 15px 0;
+            justify-content: center;
+            font-size: 2rem; /* ตัวใหญ่ขึ้น */
+            font-weight: 800;
+            color: var(--accent-color); /* ใช้สีทอง (Accent) */
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        /* สไตล์สำหรับ QR Code Box */
+        #qrcode {
+            padding: 15px;
+            background: #ffffff; /* พื้นหลังสีขาวบริสุทธิ์ */
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* เงาคมชัด */
+            margin: 30px auto;
+            max-width: 280px; /* ขนาดใหญ่ขึ้นเล็กน้อย */
+        }
+        /* สไตล์สำหรับคำอธิบายใต้หัวข้อ */
+        .modal-body p {
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+        }
+        /* สไตล์สำหรับ Footer (ปุ่มและช่องว่าง) */
+        .modal-footer-custom {
+            border-top: none;
+            padding-top: 30px;
+            justify-content: center;
+            flex-direction: column;
+            gap: 15px;
+        }
+        /* สไตล์ปุ่มลิงก์ตรง */
+        .btn-direct-link {
+            width: 100%;
+            max-width: 300px;
+            /* ใช้สไตล์เดียวกับ kiosk-btn แต่เปลี่ยนสีเป็นสีทองอ่อน ๆ */
+            background: linear-gradient(180deg, #ffd966, #fce38a);
+            color: #1a1a1a !important; /* ตัวอักษรสีเข้ม */
+            font-weight: 800;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+        .btn-direct-link:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        /* ปุ่มปิด */
+        .modal-footer-custom .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            font-weight: 600;
+            width: 100%;
+            max-width: 300px;
+            border-radius: 12px;
+        }
+        .modal .btn-close {
+            /* ปรับปุ่มปิด (x) ให้เห็นชัดเจนบนพื้นหลังโปร่งใส */
+            background-color: #fff;
+            border-radius: 50%;
+            opacity: 1;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        @media (max-width: 800px) {
+            .helper-wrap { padding: 15px; }
+            .footer-contact-row { gap: 15px; }
+            .contact-block { min-width: 48%; }
+            .contact-block.hours-block { min-width: 100%; }
+        }

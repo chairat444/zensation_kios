@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use \App\Http\Controllers\KioskController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,21 +12,23 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::view('/', 'kiosk.home')->name('kiosk.home');
+
 Route::view('/kiosk', 'kiosk.home')->name('kiosk.home');
 
+Route::prefix('kiosk')->group(function () {
 
-Route::get('/kiosk/availability', [\App\Http\Controllers\KioskController::class, 'availabilityForm'])
+
+
+Route::get('/availability', [KioskController::class, 'availabilityForm'])
      ->name('kiosk.availability');
 
-Route::post('/kiosk/availability', [\App\Http\Controllers\KioskController::class, 'availabilitySearch'])
+Route::post('/availability', [KioskController::class, 'availabilitySearch'])
      ->name('kiosk.availability.search');
 
 
-Route::get('/booking/thank-you', [\App\Http\Controllers\KioskController::class, 'thankYou'])
-    ->name('kiosk.thankyou');
+Route::get('/checkin', [KioskController::class, 'showCheckin'])->name('kiosk.checkin');
+Route::post('/search', [KioskController::class, 'searchReservation'])->name('api.kiosk.search');
 
-Route::get('/kiosk/checkin', [\App\Http\Controllers\KioskController::class, 'checkinForm'])->name('kiosk.checkin');
-Route::post('/kiosk/checkin', [\App\Http\Controllers\KioskController::class, 'checkinLookup']);
-
-Route::get('/kiosk/checkout', [\App\Http\Controllers\KioskController::class, 'checkoutForm'])->name('kiosk.checkout');
-Route::post('/kiosk/checkout', [\App\Http\Controllers\KioskController::class, 'checkoutLookup']);
+Route::post('/checkin/perform', [KioskController::class, 'performCheckin'])->name('api.kiosk.checkin.perform');
+});

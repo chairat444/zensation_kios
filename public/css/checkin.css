@@ -1,0 +1,110 @@
+/* ใช้ตัวแปรสีหลักจาก :root ที่กำหนดใน home.css */
+
+/* ใช้ .glass-card จาก home.css แต่ปรับขนาดให้เหมาะกับฟอร์ม */
+.checkin-card {
+    width: min(92vw, 600px); /* ขยายความกว้างสำหรับเนื้อหา check-in */
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid rgba(255, 255, 255, .28);
+    box-shadow: var(--shadow-1);
+    border-radius: var(--glass-br);
+    padding: 30px 40px;
+    z-index: 5;
+    color: var(--main-text-color);
+}
+
+.step-content {
+    display: none; /* ซ่อน Step อื่นๆ ไว้ก่อน */
+}
+.step-content.active {
+    display: block; /* แสดงเฉพาะ Step ปัจจุบัน */
+}
+
+/* สไตล์สำหรับ Input (Glassy) */
+.kiosk-input-lg {
+    font-size: 1.75rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 2px solid var(--kiosk-glass-border);
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--main-text-color);
+    text-transform: uppercase;
+}
+.kiosk-input-lg::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+.kiosk-input-lg:focus {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: var(--main-blue);
+    box-shadow: none;
+    color: #fff;
+}
+
+/* สไตล์สำหรับปุ่มรอง (สีเทา/โปร่งแสง) */
+.kiosk-btn.btn-secondary-glass {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.kiosk-btn.btn-secondary-glass:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* สไตล์สำหรับแสดงรายละเอียดการจอง */
+.details-box {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+}
+.details-box .label {
+    font-weight: 300;
+    opacity: 0.8;
+}
+.details-box .value {
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+/* สไตล์สำหรับ Scan Box (จำลอง) */
+.scan-box {
+    border: 3px dashed var(--accent-color);
+    border-radius: 12px;
+    padding: 2rem;
+    background: rgba(252, 227, 138, 0.1);
+    color: var(--accent-color);
+}
+.scan-box i {
+    font-size: 3rem;
+}
+.scan-status {
+    color: #fff;
+    opacity: 0.8;
+}
+.scan-status.complete {
+    color: var(--kiosk-success);
+    opacity: 1;
+}
+
+/* สไตล์หน้า Success */
+.success-box i {
+    font-size: 5rem;
+    color: var(--kiosk-success);
+}
+.room-number {
+    font-size: 6rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    line-height: 1;
+}
+
+/* Spinner Animation for Scanning */
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
