@@ -28,7 +28,10 @@ Route::post('/availability', [KioskController::class, 'availabilitySearch'])
 
 
 Route::get('/checkin', [KioskController::class, 'showCheckin'])->name('kiosk.checkin');
-Route::post('/search', [KioskController::class, 'searchReservation'])->name('api.kiosk.search');
+// Route::post('/search', [KioskController::class, 'searchReservation'])->name('kiosk.search');
+Route::post('/checkin', [KioskController::class, 'guestCheckIn'])->name('kiosk.checkin');
 
-Route::post('/checkin/perform', [KioskController::class, 'performCheckin'])->name('api.kiosk.checkin.perform');
+// Route สำหรับประมวลผลการ Sync ข้อมูลและค้นหา
+Route::any('/search', [KioskController::class, 'searchWithLiveSync'])->name('kiosk.search');
+
 });

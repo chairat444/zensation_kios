@@ -1,0 +1,319 @@
+/* 1. ดึง Font จาก Google Fonts */
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap'); */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Sarabun:wght@300;400;600;700&family=Kanit:wght@300;400;500&display=swap');
+
+/* 2. Import CSS จาก npm เพื่อใช้งานแบบ Local (ไม่ต้องใช้ CDN) */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+@import 'swiper/css/bundle';
+@import 'simple-keyboard/build/css/index.css';
+
+:root {
+    /* Font Settings */
+    --primary-font:  'Sarabun', sans-serif;
+
+    /* Theme Colors */
+    --kiosk-primary: #3b5998;
+    --kiosk-secondary: #f0f2f5;
+    --kiosk-text-dark: #1c1e21;
+    --kiosk-text-light: #ffffff;
+
+    /* Glassmorphism Effect */
+    --kiosk-glass-bg: rgba(255, 255, 255, 0.15);
+    --kiosk-glass-border: rgba(255, 255, 255, 0.3);
+    --kiosk-glass-shadow: rgba(0, 0, 0, 0.1);
+
+    /* Status Colors */
+    --kiosk-success: #38c172;
+    --kiosk-warning: #f7b924;
+    --kiosk-danger: #e3342f;
+
+    /* Keyboard Highlighting (เพิ่มจากที่เราคุยกัน) */
+    --kbd-highlight-bg: #ffffff;
+    --kbd-highlight-text: #000000;
+}
+
+/* 3. Global Styles */
+body {
+    font-family: var(--primary-font);
+    background-color: var(--kiosk-secondary);
+    color: var(--kiosk-text-dark);
+    margin: 0;
+    overflow: hidden; /* สำหรับหน้า Kiosk เพื่อไม่ให้มี Scrollbar แปลกๆ โผล่มา */
+}
+
+/* 4. Keyboard Styles (คลาสที่เราเขียนใน JS) */
+.active-highlight {
+    background-color: var(--kbd-highlight-bg) !important;
+    color: var(--kbd-highlight-text) !important;
+}
+
+/* ปรับแต่งปุ่มคีย์บอร์ดให้เป็นฟอนต์เดียวกับระบบ */
+.simple-keyboard {
+    font-family: var(--primary-font) !important;
+}
+
+
+/* Simple-Keyboard Custom Theme */
+.simple-keyboard.hg-theme-default {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border-radius: 24px;
+    padding: 15px;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    max-width: 900px;
+    z-index: 9999;
+    box-shadow: 0 -10px 50px rgba(0,0,0,0.2);
+    display: none; /* ซ่อนไว้ก่อน */
+    border: 1px solid rgba(255,255,255,0.4);
+}
+
+.simple-keyboard {
+    background-color: #1a1a1a !important; /* พื้นหลังดำสนิทแบบ iOS */
+    padding: 10px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* resources/css/checkin.css */
+
+.simple-keyboard {
+    position: fixed !important;
+    bottom: -100% !important; /* ซ่อนไว้ใต้ขอบจอก่อน */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 90% !important;
+    max-width: 1000px;
+    z-index: 2000 !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    border-radius: 30px 30px 0 0 !important; /* มนเฉพาะขอบบนให้ดูเหมือนโผล่ขึ้นมา */
+    box-shadow: 0 -20px 60px rgba(0,0,0,0.3) !important;
+    padding: 20px !important;
+
+    /* เพิ่มความสมูทในการเคลื่อนที่ */
+    transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    display: block !important; /* เปลี่ยนจาก none เป็น block เพราะเราจะคุมด้วย bottom แทน */
+    visibility: hidden; /* ซ่อนไว้กันการเผลอกด */
+}
+
+/* Class สำหรับสั่งให้เด้งขึ้นมา */
+.simple-keyboard.show-kb {
+    bottom: 0px !important; /* เลื่อนขึ้นมาติดขอบล่าง หรือปรับเป็น 40px ถ้าอยากให้ลอยเหนือ Footer */
+    visibility: visible;
+}
+
+
+/* เพิ่มเติมในไฟล์ CSS ของคุณ */
+.simple-keyboard {
+    position: fixed !important;
+    /* bottom: -100% !important;  */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    transition: bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    z-index: 2000 !important;
+    display: block !important; /* ให้เป็น block เสมอแต่คุมด้วยตำแหน่งแทน */
+}
+
+/* เมื่อมี Class นี้ คีย์บอร์ดจะเด้งขึ้นมา */
+.simple-keyboard.show-kb {
+    bottom: 200px !important;
+}
+
+.hg-button {
+    background: #505050 !important; /* สีปุ่มเทาเข้มตามภาพ */
+    color: white !important;
+    border-radius: 6px !important;
+    height: 52px !important;
+    font-size: 1.3rem !important;
+    border: none !important;
+    margin: 4px !important;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.5) !important;
+}
+
+/* ปุ่มฟังก์ชัน (123, Shift, Backspace, กขค) */
+.hg-button.hg-functionBtn,
+.hg-button[data-skbtn="123"],
+.hg-button[data-skbtn="ABC"],
+.hg-button[data-skbtn="กขค"] {
+    background: #333333 !important; /* สีเทาเข้มพิเศษ */
+}
+
+/* ปุ่มสลับภาษาและอิโมจิ (ถ้ามี) */
+.hg-button[data-skbtn="{lang}"] {
+    max-width: 60px !important;
+}
+
+/* ปุ่ม Space bar */
+.hg-button[data-skbtn="{space}"] {
+    flex-grow: 10 !important;
+    background: #505050 !important;
+}
+
+/* ปุ่ม Enter (สีเดียวกับปุ่มอื่นตามภาพต้นฉบับ) */
+.hg-button[data-skbtn="{enter}"] {
+    background: #505050 !important;
+    min-width: 80px !important;
+}
+
+/* ลบปุ่มที่ไม่ต้องการ */
+.hg-button[data-skbtn="{emoji}"],
+.hg-button[data-skbtn="{mic}"] {
+    display: none !important;
+}
+
+
+/* สีปุ่มปกติ (ฟังก์ชัน) */
+.hg-button.hg-functionBtn,
+.hg-button[data-skbtn="123"] {
+    background: #333333 !important;
+    transition: background 0.2s ease;
+}
+
+/* สถานะไฮไลท์ (เมื่อกด Shift หรือ 123 แล้วค้างหน้านั้นไว้) */
+.hg-button.active-highlight {
+    background: #ffffff !important; /* เปลี่ยนเป็นสีขาว */
+    color: #000000 !important;    /* ตัวหนังสือสีดำ */
+}
+
+/* ปุ่มสลับภาษา (รูปโลก) */
+.hg-button[data-skbtn="{lang}"] {
+    font-size: 1.5rem !important;
+}
+
+/* ปรับระยะขอบและเงาให้ดูคมชัดขึ้น */
+.hg-button {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.8) !important;
+}
+
+
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.25);
+    --accent-color: #fce38a;
+}
+body { margin: 0; padding: 0; overflow: hidden; background: #000; font-family: 'Sarabun', sans-serif; }
+
+.vh-app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 40px 50px;
+    position: relative;
+    z-index: 10;
+}
+
+/* Header & Clock */
+.kiosk-header { display: flex; justify-content: space-between; align-items: flex-start; z-index: 20; }
+.logo-img { max-height: 80px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.brand-sub { color: white; opacity: 0.7; font-size: 0.9rem; margin-top: 5px; font-weight: 600; }
+
+.clock-wrap { color: white; text-align: right; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+.time-display { display: flex; align-items: flex-start; gap: 8px; line-height: 0.8; }
+.time-main { font-size: 4.8rem; font-weight: 800; }
+.time-side-wrap { display: flex; flex-direction: column; margin-top: 10px; text-align: left; }
+.time-seconds { font-size: 1.4rem; opacity: 0.6; font-weight: 700; }
+.time-period { font-size: 1.4rem; color: var(--accent-color); font-weight: 800; }
+.clock-date-lg { font-size: 1.2rem; opacity: 0.8; margin-top: 10px; }
+
+/* Body & Content */
+.kiosk-body { flex: 1; display: flex; align-items: center; justify-content: center; width: 100%; z-index: 15; }
+
+/* Footer */
+.kiosk-footer-container { width: 100%; z-index: 20; margin-top: auto; }
+.helper-wrap {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 25px;
+    padding: 20px 40px;
+    color: white;
+}
+.footer-message-row {
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 12px; margin-bottom: 15px;
+    font-size: 1.1rem; font-weight: 500;
+}
+.footer-message-row i { color: var(--accent-color); font-size: 1.3rem; }
+.footer-contact-row { display: flex; justify-content: space-between; align-items: center; }
+.contact-block { display: flex; align-items: center; gap: 12px; }
+.contact-icon { color: var(--accent-color); font-size: 1.5rem; }
+.label { font-size: 0.7rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; }
+.value { font-size: 1.15rem; font-weight: 700; }
+
+/* ตัว Modal หลักที่เน้นความใสแบบกระจก */
+.glass-alert-content {
+    background: rgba(255, 255, 255) !important; /* พื้นหลังขาวใส */
+    backdrop-filter: blur(15px); /* เอฟเฟกต์กระจกฝ้า */
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 30px !important; /* ขอบมนสวยๆ */
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2); /* เงาลึกๆ ให้ดูมีมิติ */
+}
+
+/* ปรับแต่งวงกลมไอคอน */
+.alert-icon-circle {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 3.5rem;
+}
+
+/* สีสำหรับ Error */
+.alert-icon-error {
+    background-color: rgba(255, 71, 87, 0.1);
+    color: #ff4757;
+    border: 2px solid rgba(255, 71, 87, 0.2);
+}
+
+/* สีสำหรับ Success */
+.alert-icon-success {
+    background-color: rgba(46, 213, 115, 0.1);
+    color: #2ed573;
+    border: 2px solid rgba(46, 213, 115, 0.2);
+}
+
+/* ปรับแต่งปุ่มให้ดูทันสมัย */
+.kiosk-btn-main {
+    background: #1e376d; /* สีน้ำเงินเข้มตามรูป */
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 50px; /* ปุ่มมนยาว */
+    font-weight: 700;
+    transition: transform 0.2s ease;
+}
+
+.kiosk-btn-main:hover {
+    transform: scale(1.02); /* ขยายเล็กน้อยตอนกด */
+}
+
+/* Animation ตอนเปิด Modal */
+.modal.fade .glass-alert-content {
+    transform: scale(0.8);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal.show .glass-alert-content {
+    transform: scale(1);
+}
+
+#kioskAlertIcon.bi-exclamation-triangle {
+    font-size: 0.9em; /* ลดขนาดลงเล็กน้อยถ้ามันชนขอบวงกลม */
+    transform: translateY(-2px); /* ปรับตำแหน่งขึ้นเล็กน้อยเพื่อให้ดูอยู่ตรงกลางสามเหลี่ยม */
+}
+
+.modal-backdrop.show {
+    opacity: 0.7;
+    backdrop-filter: blur(5px); /* เบลอหน้าจอข้างหลังทั้งหมด */
+}

@@ -14,5 +14,13 @@
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14"
+    },
+    "dependencies": {
+        "bootstrap": "^5.3.8",
+        "bootstrap-icons": "^1.13.1",
+        "jquery": "^4.0.0",
+        "simple-keyboard": "^3.8.93",
+        "sweetalert2": "^11.26.17",
+        "swiper": "^12.1.0"
     }
 }
