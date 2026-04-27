@@ -8,9 +8,9 @@
 
     <div class="px-5">
         <div class="input-group-lg mb-4">
-            <input type="text" id="reservationInput" value="RES5186"
+            <input type="text" id="reservationInput"
                 class="form-control kiosk-input-custom kiosk-keyboard-input" placeholder="Search here..."
-                autocomplete="off">
+                autocomplete="off" value="RES6542">
         </div>
         <button id="searchBtn" class="kiosk-btn-main w-100 mb-4">
             <span>SEARCH RESERVATION</span>

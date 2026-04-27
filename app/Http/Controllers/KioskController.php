@@ -9,11 +9,38 @@ use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-use RouterOS\Client;
-use RouterOS\Query;
-
 class KioskController extends Controller
 {
+    public function availabilityForm()
+    {
+        return view('kiosk.availability', [
+            'data' => [
+                'checkin' => now()->toDateString(),
+                'checkout' => now()->addDay()->toDateString(),
+                'adults' => 2,
+                'children' => 0,
+                'rooms' => 1,
+            ],
+        ]);
+    }
+
+    public function availabilitySearch(Request $request)
+    {
+        $data = $request->validate([
+            'checkin' => ['required', 'date'],
+            'checkout' => ['required', 'date', 'after:checkin'],
+            'adults' => ['required', 'integer', 'min:1', 'max:6'],
+            'children' => ['nullable', 'integer', 'min:0', 'max:6'],
+            'rooms' => ['required', 'integer', 'min:1', 'max:5'],
+        ]);
+
+        // Placeholder data until booking API integration is implemented.
+        return view('kiosk.availability', [
+            'data' => $data,
+            'rooms' => [],
+        ]);
+    }
+
 
     public function showHome()
     {
@@ -40,13 +67,15 @@ class KioskController extends Controller
     // ดึงรายการมาเก็บไว้ก่อน
     public function searchWithLiveSync(Request $request)
     {
-        // $request->date='2026-01-26';
-        $targetDate = $request->date ?? now()->format('Y-m-d');
-        $searchTerm = $request->search;
+        $targetDate = $request->input('date', now()->format('Y-m-d'));
+        $searchTerm = trim((string) $request->input('search', ''));
 
-        // dd($searchTerm);
-
-        // $searchTerm = "1976991688/1";
+        if ($searchTerm === '') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Search term is required.',
+            ], 422);
+        }
 
         // 1. ดึงข้อมูลจาก API มาอัปเดตก่อน
         try {
@@ -82,6 +111,12 @@ class KioskController extends Controller
 
                 foreach ($reservations as $res) {
                     $transactions = data_get($res, 'BookingTran', []);
+                    if (!is_array($transactions)) {
+                        $transactions = [];
+                    }
+                    if (isset($transactions['SubBookingId'])) {
+                        $transactions = [$transactions];
+                    }
 
                     foreach ($transactions as $tran) {
                         Booking::updateOrCreate(
@@ -114,8 +149,7 @@ class KioskController extends Controller
 
         } catch (\Exception $e) {
             // กรณี API ล่ม ให้ข้ามไปค้นหาจากข้อมูลล่าสุดที่มีใน DB แทน
-            logger("IPMS API Error: " . $e->getMessage());
-            dd($e->getMessage());
+            Log::warning("IPMS API Error: {$e->getMessage()}");
         }
 
         // 2. ค้นหาข้อมูลจาก Database หลังจาก Sync เสร็จ
@@ -128,34 +162,31 @@ class KioskController extends Controller
             })
             ->first();
 
-            if (!$booking) {
-                if (!$booking) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'We couldn\'t find your reservation. Please double-check your <b>Booking ID</b>, <b>Voucher</b>, or <b>Name</b>.<br><br><small class="text-muted">Need help? Please contact the front desk.</small>'
-                    ], 200);
-                }
-            }
-
+        if (!$booking) {
             return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'booking_id'      => $booking->booking_id,
-                    'guest_name'      => $booking->first_name . ' ' . $booking->last_name,
-                    'room_name'       => $booking->room_name,
-                    'room_type'       => $booking->room_type_name,
-                    'voucher_no'      => $booking->voucher_no,
-                    'email' =>$booking->email,
-                    'address' =>$booking->address,
-                    'phone' =>$booking->phone,
-                    'mobile' =>$booking->mobile,
+                'status' => 'error',
+                'message' => 'We couldn\'t find your reservation. Please double-check your <b>Booking ID</b>, <b>Voucher</b>, or <b>Name</b>.<br><br><small class="text-muted">Need help? Please contact the front desk.</small>'
+            ], 200);
+        }
 
-                    'arrival_date'    => Carbon::parse($booking->arrival_date)->format('d M Y'), // ฟอร์แมตให้อ่านง่าย
-                    'departure_date'  => Carbon::parse($booking->departure_date)->format('d M Y'), // ฟอร์แมตให้อ่านง่าย
-                    'check_in'        => Carbon::parse($booking->arrival_date)->setTimeFromTimeString($booking->arrival_time)->toIso8601String(),
-                    'check_out'       => Carbon::parse($booking->departure_date)->setTimeFromTimeString($booking->departure_time)->toIso8601String(),
-                ]
-            ]);
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'booking_id'      => $booking->booking_id,
+                'guest_name'      => $booking->first_name . ' ' . $booking->last_name,
+                'room_name'       => $booking->room_name,
+                'room_type'       => $booking->room_type_name,
+                'voucher_no'      => $booking->voucher_no,
+                'email'           => $booking->email,
+                'address'         => $booking->address,
+                'phone'           => $booking->phone,
+                'mobile'          => $booking->mobile,
+                'arrival_date'    => Carbon::parse($booking->arrival_date)->format('d M Y'),
+                'departure_date'  => Carbon::parse($booking->departure_date)->format('d M Y'),
+                'check_in'        => Carbon::parse($booking->arrival_date)->setTimeFromTimeString($booking->arrival_time)->toIso8601String(),
+                'check_out'       => Carbon::parse($booking->departure_date)->setTimeFromTimeString($booking->departure_time)->toIso8601String(),
+            ]
+        ]);
     }
 
     //ค้นหาข้อมูลการจองห้องพักจาก Reservation ID
@@ -297,9 +328,9 @@ class KioskController extends Controller
                 $grCardNo = $body['Success']['GuestRegistrationCards'][0]['GRCardNo'] ?? null;
 
                 // --- ส่วนจัดการ MikroTik WiFi ---
-                $wifiUser = $validated['room_code'].'a';
+                $wifiUser = $validated['room_code'];
                 $wifiPass = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
-                $this->manageMikroTikWiFi($wifiUser, $wifiPass, $validated['guest_name']);
+                $wifiProvisioned = $this->manageMikroTikWiFi($wifiUser, $wifiPass, $validated['guest_name']);
 
                 // อัปเดต DB
                 DB::table('kiosk_bookings')
@@ -318,9 +349,10 @@ class KioskController extends Controller
                     'data'    => [
                         'room_code'  => $validated['room_code'],
                         'gr_card_no' => $grCardNo,
-                        'wifi_user'  => $wifiUser,
-                        'wifi_pass'  => $wifiPass,
-                        'wifi_ssid'  => '@Zensation-N'
+                        'wifi_user'  => $wifiProvisioned ? $wifiUser : null,
+                        'wifi_pass'  => $wifiProvisioned ? $wifiPass : null,
+                        'wifi_ssid'  => $wifiProvisioned ? '@Zensation-N' : null,
+                        'wifi_status' => $wifiProvisioned ? 'ready' : 'unavailable',
                     ]
                 ]);
             }
@@ -348,12 +380,27 @@ class KioskController extends Controller
     private function manageMikroTikWiFi($username, $password, $guestName)
     {
         try {
+            $host = (string) config('kiosk.mikrotik.host', '');
+            $user = (string) config('kiosk.mikrotik.user', '');
+            $pass = (string) config('kiosk.mikrotik.pass', '');
+            $port = (int) config('kiosk.mikrotik.port', 8728);
+
+            // If MikroTik is not configured yet, skip WiFi provisioning gracefully.
+            if ($host === '' || $user === '' || $pass === '') {
+                Log::warning('MikroTik config missing. Skip WiFi provisioning.', [
+                    'host_set' => $host !== '',
+                    'user_set' => $user !== '',
+                    'pass_set' => $pass !== '',
+                ]);
+                return false;
+            }
+
             // ใช้ชื่อ Class เต็มเพื่อป้องกันปัญหา Autoload
             $client = new \RouterOS\Client([
-                'host' => 'hkc0ancezwg.sn.mynetname.net',
-                'user' => 'kiosk_api',
-                'pass' => 'zenSath0rn11',
-                'port' => 8728,
+                'host' => $host,
+                'user' => $user,
+                'pass' => $pass,
+                'port' => $port,
                 'timeout' => 10
             ]);
 
@@ -383,12 +430,12 @@ class KioskController extends Controller
             $response = $client->query($queryAdd)->read();
 
             Log::info("MikroTik WiFi created for Room $username", ['response' => $response]);
+            return true;
 
         } catch (\Exception $e) {
             Log::error("MikroTik Connection Failed: " . $e->getMessage());
-            // ในสถานการณ์จริง เราอาจไม่หยุดการเช็คอินถ้าแค่ WiFi พัง
-            // แต่ช่วง Debug ให้ throw ออกมาดูครับ
-            throw new \Exception("MikroTik System Error: " . $e->getMessage());
+            // Do not fail the whole check-in flow if WiFi provisioning failed.
+            return false;
         }
     }
 

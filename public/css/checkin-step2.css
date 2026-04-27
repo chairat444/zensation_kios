@@ -1,0 +1,361 @@
+.min-w-100 {
+    min-width: 120px;
+}
+.preview-id-card {
+    max-width: 90%;
+}
+
+.id-photo-standard {
+    max-height: 120px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.id-card-badge {
+    font-size: 0.6rem;
+    transform: translateY(50%);
+}
+
+.info-badge-sm {
+    font-size: 0.7rem;
+}
+
+.address-standard {
+    line-height: 1.2;
+    font-size: 0.8rem;
+}
+
+#previewPassport {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.4s ease-out;
+}
+.preview-passport {
+    max-width: 95%;
+}
+
+#img_PassportPhoto_Big {
+    transition: transform 0.3s;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2) !important;
+}
+.passport-photo-big {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border: 5px solid #fff !important;
+}
+
+.passport-badge {
+    font-size: 0.8rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.passport-name {
+    font-size: 1.8rem;
+}
+
+.passport-id {
+    font-size: 1.2rem;
+}
+
+.scan-prompt-icon {
+    font-size: 3.5rem;
+}
+
+.scan-prompt-divider {
+    height: 50px;
+    align-self: center;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.scan-progress-wrap {
+    width: 80%;
+    height: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.scan-progress-bar {
+    width: 0%;
+    background-color: #c5a059;
+}
+
+/* Reservation summary: use space more efficiently with stronger hierarchy */
+.reservation-summary {
+    margin-bottom: 10px !important;
+}
+
+.summary-label {
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #64748b;
+    font-weight: 700;
+}
+
+.summary-guest-name {
+    font-size: 2rem;
+    line-height: 1.05;
+    margin: 6px 0 0;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.reservation-room-type {
+    font-size: 0.88rem;
+    padding: 6px 12px;
+}
+
+.reservation-grid {
+    margin-top: 6px;
+}
+
+.summary-meta-label {
+    font-size: 0.84rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.summary-meta-value {
+    font-size: 1.2rem;
+    line-height: 1.1;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.camera-capture-card {
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    border: 2px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 14px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.camera-stage {
+    position: relative;
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #0f172a;
+    aspect-ratio: 16 / 6.8;
+    max-height: 220px;
+}
+
+/* Taller portrait preview + person-shaped guide (guest photo step) */
+.camera-stage--portrait {
+    aspect-ratio: 3 / 4;
+    max-height: min(56vh, 520px);
+    min-height: 280px;
+}
+
+.guest-photo-layout {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 0 12px;
+}
+
+.guest-photo-camera-block {
+    margin-bottom: 0;
+}
+
+.camera-capture-card--fullscreenish {
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+.guest-photo-hint-panel {
+    margin-top: 14px;
+    padding: 16px 18px 4px;
+    background: #ffffff;
+    border-radius: 20px;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+    text-align: center;
+}
+
+.guest-photo-hint-th {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 0.02em;
+}
+
+.guest-photo-hint-en {
+    font-size: 0.82rem !important;
+    line-height: 1.35;
+}
+
+.checkin-step2-contact {
+    margin-top: 8px;
+}
+
+.camera-stage--guided .camera-preview,
+.camera-stage--guided .camera-placeholder {
+    position: relative;
+    z-index: 1;
+}
+
+.camera-frame-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.camera-guidance-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.camera-guidance-silhouette {
+    transition: stroke 0.25s ease, filter 0.25s ease;
+}
+
+.camera-guidance-silhouette.is-ready {
+    stroke: #c5a059 !important;
+    filter: drop-shadow(0 0 10px rgba(197, 160, 89, 0.95));
+}
+
+.face-guide-toast {
+    position: absolute;
+    left: 50%;
+    bottom: 11%;
+    transform: translateX(-50%);
+    z-index: 4;
+    min-width: min(92%, 320px);
+    padding: 12px 22px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #e8d5a8 0%, #c5a059 100%);
+    color: #1a1206;
+    font-weight: 900;
+    font-size: clamp(1.05rem, 2.8vw, 1.35rem);
+    letter-spacing: 0.08em;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+    animation: faceToastPulse 0.9s ease-in-out infinite;
+    text-align: center;
+}
+
+.face-guide-toast .face-toast-main {
+    display: block;
+    font-size: clamp(1rem, 2.6vw, 1.2rem);
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.face-guide-toast .face-toast-sub {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: rgba(26, 18, 6, 0.78);
+    text-transform: none;
+}
+
+.face-guide-toast--countdown {
+    animation: none;
+    padding: 14px 28px 12px;
+}
+
+.face-guide-toast--countdown .face-count-num {
+    display: block;
+    font-size: clamp(2.4rem, 10vw, 3.4rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 0.02em;
+}
+
+.face-guide-toast--countdown .face-toast-sub {
+    margin-top: 6px;
+}
+
+@keyframes faceToastPulse {
+    0%,
+    100% {
+        transform: translateX(-50%) scale(1);
+    }
+    50% {
+        transform: translateX(-50%) scale(1.03);
+    }
+}
+
+.camera-preview,
+.camera-placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.camera-placeholder {
+    flex-direction: column;
+    gap: 10px;
+    color: #cbd5e1;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.camera-placeholder i {
+    font-size: 2rem;
+}
+
+.camera-placeholder-hint {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #94a3b8;
+    max-width: 100%;
+    text-align: center;
+    padding: 0 10px;
+}
+
+.camera-action-btn {
+    height: 48px !important;
+    font-size: 0.92rem !important;
+    flex: 1;
+}
+
+.camera-status-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.camera-capture-card .mb-3 {
+    margin-bottom: 0.75rem !important;
+}
+
+.camera-capture-card .mt-3 {
+    margin-top: 0.75rem !important;
+}
+
+.camera-status-badge.pending {
+    background: rgba(251, 191, 36, 0.14);
+    color: #92400e;
+}
+
+.camera-status-badge.ready {
+    background: rgba(34, 197, 94, 0.14);
+    color: #166534;
+}
+
+.camera-status-badge.error {
+    background: rgba(239, 68, 68, 0.14);
+    color: #991b1b;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

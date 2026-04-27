@@ -4,50 +4,22 @@
 @push('styles')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-<style>
-  :root{ --glass:#ffffff2e; --max:840px; }
-  .hero{
-    min-height:100vh; display:flex; align-items:center; justify-content:center;
-    background: radial-gradient(1200px 400px at 50% 0, #dfefff 0%, #eef3ff 40%, #f7f9ff 70%, #ffffff 100%);
-  }
-  .card-glass{
-    width:min(92vw,var(--max));
-    border:1px solid rgba(255,255,255,.55);
-    background:var(--glass); backdrop-filter: blur(12px);
-    box-shadow: 0 24px 60px rgba(15,30,60,.18);
-    border-radius:16px;
-  }
-  .title{
-    font-weight:900; letter-spacing:.04em;
-    text-transform:uppercase; color:#2b7ddd;
-    text-shadow:0 6px 18px rgba(43,125,221,.25);
-  }
-  .btn-primary{ background:#2b7ddd; border:0; }
-  .btn-primary:hover{ background:#2166bd; }
-  .input-icon{ position:relative; }
-  .input-icon i{
-    position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#6b7a90;
-  }
-  .input-icon input, .input-icon select{ padding-left:38px; }
-  .result-card{ border:1px solid #e9eef6; border-radius:14px; }
-  .price{ font-weight:900; font-size:1.4rem; color:#0f6; }
-  .spinner-overlay{
-    position:fixed; inset:0; background:rgba(255,255,255,.6);
-    display:none; align-items:center; justify-content:center; z-index:9999;
-  }
-</style>
+<link rel="stylesheet" href="{{ asset('css/availability.css') }}">
 @endpush
 
 @section('content')
 <div class="hero">
   <div class="card card-glass p-3 p-md-4">
     <div class="d-flex align-items-center gap-3 mb-3">
-      <img src="{{ asset('images/zensationlogo.png') }}" style="height:38px">
+      <img src="{{ asset('images/zensationlogo.png') }}" class="availability-logo" alt="Zensation logo">
       <h2 class="title m-0">Check Availability</h2>
     </div>
 
     {{-- Search form --}}
-    <form class="row g-3" method="post" action="{{ route('kiosk.availability.search') }}" id="availForm">
+    <form class="row g-3" method="post" action="{{ route('kiosk.availability.search') }}" id="availForm"
+      data-checkin="{{ $data['checkin'] ?? '' }}"
+      data-checkout="{{ $data['checkout'] ?? '' }}"
+      data-min-checkout="{{ $data['checkin'] ?? now()->toDateString() }}">
       @csrf
       <div class="col-12 col-md-4 input-icon">
         <i class="bi bi-calendar-check"></i>
@@ -138,29 +110,11 @@
 
 {{-- loading overlay --}}
 <div class="spinner-overlay" id="loading">
-  <div class="spinner-border text-primary" role="status" style="width:3rem;height:3rem"></div>
+  <div class="spinner-border text-primary loading-spinner-lg" role="status"></div>
 </div>
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script>
-  // Date pickers
-  const today = new Date();
-  const fpIn  = flatpickr("#checkin", {
-    dateFormat: "Y-m-d",
-    minDate: today,
-    defaultDate: "{{ $data['checkin'] ?? '' }}",
-    onChange: (sel)=> fpOut.set('minDate', sel[0] || today)
-  });
-  const fpOut = flatpickr("#checkout", {
-    dateFormat: "Y-m-d",
-    minDate: "{{ $data['checkin'] ?? now()->toDateString() }}",
-    defaultDate: "{{ $data['checkout'] ?? '' }}"
-  });
-
-  // Submit spinner
-  const form = document.getElementById('availForm');
-  form?.addEventListener('submit', ()=> document.getElementById('loading').style.display='flex');
-</script>
+<script src="{{ asset('js/availability.js') }}"></script>
 @endpush

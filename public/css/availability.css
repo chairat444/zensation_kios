@@ -1,0 +1,71 @@
+:root { --glass: #ffffff2e; --max: 840px; }
+
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(1200px 400px at 50% 0, #dfefff 0%, #eef3ff 40%, #f7f9ff 70%, #ffffff 100%);
+}
+
+.card-glass {
+    width: min(92vw, var(--max));
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 24px 60px rgba(15, 30, 60, 0.18);
+    border-radius: 16px;
+}
+
+.title {
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #2b7ddd;
+    text-shadow: 0 6px 18px rgba(43, 125, 221, 0.25);
+}
+
+.btn-primary { background: #2b7ddd; border: 0; }
+.btn-primary:hover { background: #2166bd; }
+
+.input-icon { position: relative; }
+.input-icon i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7a90;
+}
+
+.input-icon input,
+.input-icon select { padding-left: 38px; }
+
+.result-card {
+    border: 1px solid #e9eef6;
+    border-radius: 14px;
+}
+
+.price {
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: #00ff66;
+}
+
+.spinner-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.availability-logo {
+    height: 38px;
+}
+
+.loading-spinner-lg {
+    width: 3rem;
+    height: 3rem;
+}

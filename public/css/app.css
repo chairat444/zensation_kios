@@ -3035,75 +3035,26 @@ body {
 /* ปรับแต่งปุ่มคีย์บอร์ดให้เป็นฟอนต์เดียวกับระบบ */
 .simple-keyboard {
     font-family: var(--primary-font) !important;
-}
-
-
-/* Simple-Keyboard Custom Theme */
-.simple-keyboard.hg-theme-default {
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(15px);
-    border-radius: 24px;
-    padding: 15px;
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 95%;
-    max-width: 900px;
-    z-index: 9999;
-    box-shadow: 0 -10px 50px rgba(0,0,0,0.2);
-    display: none; /* ซ่อนไว้ก่อน */
-    border: 1px solid rgba(255,255,255,0.4);
-}
-
-.simple-keyboard {
-    background-color: #1a1a1a !important; /* พื้นหลังดำสนิทแบบ iOS */
-    padding: 10px !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-
-/* resources/css/checkin.css */
-
-.simple-keyboard {
     position: fixed !important;
-    bottom: -100% !important; /* ซ่อนไว้ใต้ขอบจอก่อน */
+    bottom: -100% !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
-    width: 90% !important;
-    max-width: 1000px;
+    width: 95% !important;
+    max-width: 900px !important;
     z-index: 2000 !important;
     background: rgba(255, 255, 255, 0.98) !important;
-    border-radius: 30px 30px 0 0 !important; /* มนเฉพาะขอบบนให้ดูเหมือนโผล่ขึ้นมา */
-    box-shadow: 0 -20px 60px rgba(0,0,0,0.3) !important;
-    padding: 20px !important;
-
-    /* เพิ่มความสมูทในการเคลื่อนที่ */
+    border-radius: 25px !important;
+    box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.4) !important;
+    padding: 10px !important;
     transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    display: block !important; /* เปลี่ยนจาก none เป็น block เพราะเราจะคุมด้วย bottom แทน */
-    visibility: hidden; /* ซ่อนไว้กันการเผลอกด */
-}
-
-/* Class สำหรับสั่งให้เด้งขึ้นมา */
-.simple-keyboard.show-kb {
-    bottom: 0px !important; /* เลื่อนขึ้นมาติดขอบล่าง หรือปรับเป็น 40px ถ้าอยากให้ลอยเหนือ Footer */
-    visibility: visible;
-}
-
-
-/* เพิ่มเติมในไฟล์ CSS ของคุณ */
-.simple-keyboard {
-    position: fixed !important;
-    /* bottom: -100% !important;  */
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    transition: bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    z-index: 2000 !important;
-    display: block !important; /* ให้เป็น block เสมอแต่คุมด้วยตำแหน่งแทน */
+    display: block !important;
+    visibility: hidden;
 }
 
 /* เมื่อมี Class นี้ คีย์บอร์ดจะเด้งขึ้นมา */
 .simple-keyboard.show-kb {
-    bottom: 200px !important;
+    bottom: 20px !important;
+    visibility: visible;
 }
 
 .hg-button {
@@ -3115,19 +3066,22 @@ body {
     border: none !important;
     margin: 4px !important;
     box-shadow: 0 1px 0 rgba(0,0,0,0.5) !important;
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), filter 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease !important;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 /* ปุ่มฟังก์ชัน (123, Shift, Backspace, กขค) */
 .hg-button.hg-functionBtn,
-.hg-button[data-skbtn="123"],
-.hg-button[data-skbtn="ABC"],
-.hg-button[data-skbtn="กขค"] {
+.hg-button[data-skbtn="{numbers}"],
+.hg-button[data-skbtn="{alpha_en}"],
+.hg-button[data-skbtn="{alpha_th}"] {
     background: #333333 !important; /* สีเทาเข้มพิเศษ */
 }
 
 /* ปุ่มสลับภาษาและอิโมจิ (ถ้ามี) */
 .hg-button[data-skbtn="{lang}"] {
-    max-width: 60px !important;
+    max-width: 96px !important;
 }
 
 /* ปุ่ม Space bar */
@@ -3151,7 +3105,7 @@ body {
 
 /* สีปุ่มปกติ (ฟังก์ชัน) */
 .hg-button.hg-functionBtn,
-.hg-button[data-skbtn="123"] {
+.hg-button[data-skbtn="{numbers}"] {
     background: #333333 !important;
     transition: background 0.2s ease;
 }
@@ -3170,6 +3124,36 @@ body {
 /* ปรับระยะขอบและเงาให้ดูคมชัดขึ้น */
 .hg-button {
     box-shadow: 0 1px 2px rgba(0,0,0,0.8) !important;
+}
+
+/* Touch feedback for kiosk screen */
+.simple-keyboard .hg-button:active,
+.simple-keyboard .hg-button.kb-pressed {
+    transform: translateY(1px) scale(0.96);
+    filter: brightness(1.06) saturate(1.08);
+    background: linear-gradient(180deg, #6b5b3a 0%, #594a31 100%) !important;
+    box-shadow:
+        0 0 0 1px rgba(232, 213, 181, 0.34),
+        0 0 10px rgba(232, 213, 181, 0.42),
+        0 0 18px rgba(197, 160, 89, 0.35),
+        inset 0 1px 0 rgba(255, 244, 214, 0.35),
+        0 3px 10px rgba(0, 0, 0, 0.55) !important;
+}
+
+.simple-keyboard .hg-button.kb-release {
+    animation: kb-gold-bounce 220ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+@keyframes kb-gold-bounce {
+    0% {
+        transform: translateY(1px) scale(0.96);
+    }
+    55% {
+        transform: translateY(-1px) scale(1.01);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+    }
 }
 
 

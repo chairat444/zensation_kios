@@ -15,16 +15,66 @@ window.Swal = Swal;
 $(document).ready(function () {
     const $keyboardElement = $('.simple-keyboard');
     const $content = $('.checkin-content');
+    const KEYBOARD_GAP = 16;
+
+    const getKeyboardHeight = () => {
+        const h = $keyboardElement.outerHeight();
+        return h && h > 0 ? h : 320;
+    };
+
+    const applyContentLift = (inputEl = null) => {
+        const keyboardHeight = getKeyboardHeight();
+        const baseLift = Math.max(55, Math.min(150, Math.round(keyboardHeight * 0.24)));
+        let lift = baseLift;
+
+        if (inputEl && inputEl.getBoundingClientRect) {
+            const rect = inputEl.getBoundingClientRect();
+            const keyboardTop = window.innerHeight - keyboardHeight - 20;
+            const overlap = rect.bottom + KEYBOARD_GAP - keyboardTop;
+            if (overlap > 0) {
+                lift += overlap;
+            }
+        }
+
+        // Keep top breathing space so content won't stick to header.
+        const contentEl = $content.get(0);
+        if (contentEl && contentEl.getBoundingClientRect) {
+            const contentTop = contentEl.getBoundingClientRect().top;
+            const minTopGap = 130;
+            const projectedTop = contentTop - lift;
+            if (projectedTop < minTopGap) {
+                lift = Math.max(0, lift - (minTopGap - projectedTop));
+            }
+        }
+
+        $content.css({
+            transform: `translateY(-${Math.round(lift)}px)`,
+            transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
+        });
+    };
+
+    const openKeyboard = (inputEl = null) => {
+        $keyboardElement.addClass('show-kb');
+        $('body').addClass('keyboard-open');
+        applyContentLift(inputEl);
+        if (inputEl && typeof inputEl.scrollIntoView === 'function') {
+            setTimeout(() => {
+                inputEl.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            }, 80);
+        }
+    };
+
+    const closeKeyboard = () => {
+        $keyboardElement.removeClass('show-kb');
+        $('body').removeClass('keyboard-open');
+        $content.css('transform', 'translateY(0)');
+    };
 
     if ($('.kiosk-keyboard-input').length > 0) {
         KioskKeyboard.init('.kiosk-keyboard-input');
 
         $(document).on('focus', '.kiosk-keyboard-input', function() {
-            $keyboardElement.addClass('show-kb');
-            $content.css({
-                'transform': 'translateY(-100px)', // ขยับขึ้นอีกนิดให้พ้นระยะคีย์บอร์ด
-                'transition': 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
-            });
+            openKeyboard(this);
         });
 
         // ปรับการตรวจจับคลิกนอก ให้ฉลาดขึ้น
@@ -37,9 +87,28 @@ $(document).ready(function () {
 
             // ถ้าไม่ใช่คลิกที่ Input และ ไม่ได้คลิกบนคีย์บอร์ด/ปุ่มคีย์บอร์ด ถึงจะปิด
             if (!isInput && !isKeyboard && !isKey) {
-                $keyboardElement.removeClass('show-kb');
-                $content.css('transform', 'translateY(0)');
+                closeKeyboard();
             }
+        });
+
+        // ให้ keyboard.js เรียกใช้เพื่อคงสถานะตอนสลับ layout (เหมือน iPhone)
+        $(document).on('kiosk:keyboard-keep-open', (event, payload = {}) => {
+            openKeyboard(payload.input || document.activeElement || null);
+        });
+
+        $(document).on('kiosk:keyboard-close', () => {
+            closeKeyboard();
+        });
+
+        // Add tactile-like visual feedback for touchscreen keyboard taps
+        $(document).on('touchstart mousedown', '.simple-keyboard .hg-button', function () {
+            $(this).removeClass('kb-release');
+            $(this).addClass('kb-pressed');
+        });
+        $(document).on('touchend touchcancel mouseup mouseleave', '.simple-keyboard .hg-button', function () {
+            $(this).removeClass('kb-pressed');
+            $(this).addClass('kb-release');
+            setTimeout(() => $(this).removeClass('kb-release'), 240);
         });
     }
 
@@ -49,8 +118,7 @@ $(document).ready(function () {
         if ($modalElement.length === 0) return;
 
         // ปิดคีย์บอร์ดเมื่อ Popup มา
-        $keyboardElement.removeClass('show-kb');
-        $content.css('transform', 'translateY(0)');
+        closeKeyboard();
 
         const $iconWrapper = $('#kioskAlertIconWrapper');
         const $icon = $('#kioskAlertIcon');

@@ -10,10 +10,12 @@ return [
         'reservation_url' =>'https://live.ipms247.com/channelbookings/vacation_rental.php',
         'checkin_url' =>'https://live.ipms247.com/index.php/page/service.kioskconnectivity',
         'pms_url' =>'https://live.ipms247.com/pmsinterface/pms_connectivity.php',
-
-
-
     ],
 
-    // การตั้งค่าอื่นๆ ของ Kiosk สามารถเพิ่มได้ที่นี่
+    'mikrotik' => [
+        'host' => env('MIKROTIK_HOST'),
+        'user' => env('MIKROTIK_USER'),
+        'pass' => env('MIKROTIK_PASS'),
+        'port' => env('MIKROTIK_PORT', 8728),
+    ],
 ];

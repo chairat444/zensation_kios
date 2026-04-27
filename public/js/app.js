@@ -52502,15 +52502,63 @@ window.Swal = (sweetalert2__WEBPACK_IMPORTED_MODULE_5___default());
 (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])(document).ready(function () {
   var $keyboardElement = (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])('.simple-keyboard');
   var $content = (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])('.checkin-content');
+  var KEYBOARD_GAP = 16;
+  var getKeyboardHeight = function getKeyboardHeight() {
+    var h = $keyboardElement.outerHeight();
+    return h && h > 0 ? h : 320;
+  };
+  var applyContentLift = function applyContentLift() {
+    var inputEl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var keyboardHeight = getKeyboardHeight();
+    var baseLift = Math.max(55, Math.min(150, Math.round(keyboardHeight * 0.24)));
+    var lift = baseLift;
+    if (inputEl && inputEl.getBoundingClientRect) {
+      var rect = inputEl.getBoundingClientRect();
+      var keyboardTop = window.innerHeight - keyboardHeight - 20;
+      var overlap = rect.bottom + KEYBOARD_GAP - keyboardTop;
+      if (overlap > 0) {
+        lift += overlap;
+      }
+    }
+
+    // Keep top breathing space so content won't stick to header.
+    var contentEl = $content.get(0);
+    if (contentEl && contentEl.getBoundingClientRect) {
+      var contentTop = contentEl.getBoundingClientRect().top;
+      var minTopGap = 130;
+      var projectedTop = contentTop - lift;
+      if (projectedTop < minTopGap) {
+        lift = Math.max(0, lift - (minTopGap - projectedTop));
+      }
+    }
+    $content.css({
+      transform: "translateY(-".concat(Math.round(lift), "px)"),
+      transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
+    });
+  };
+  var openKeyboard = function openKeyboard() {
+    var inputEl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    $keyboardElement.addClass('show-kb');
+    (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])('body').addClass('keyboard-open');
+    applyContentLift(inputEl);
+    if (inputEl && typeof inputEl.scrollIntoView === 'function') {
+      setTimeout(function () {
+        inputEl.scrollIntoView({
+          block: 'center',
+          behavior: 'smooth'
+        });
+      }, 80);
+    }
+  };
+  var closeKeyboard = function closeKeyboard() {
+    $keyboardElement.removeClass('show-kb');
+    (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])('body').removeClass('keyboard-open');
+    $content.css('transform', 'translateY(0)');
+  };
   if ((0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])('.kiosk-keyboard-input').length > 0) {
     _keyboard__WEBPACK_IMPORTED_MODULE_4__["default"].init('.kiosk-keyboard-input');
     (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])(document).on('focus', '.kiosk-keyboard-input', function () {
-      $keyboardElement.addClass('show-kb');
-      $content.css({
-        'transform': 'translateY(-100px)',
-        // ขยับขึ้นอีกนิดให้พ้นระยะคีย์บอร์ด
-        'transition': 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
-      });
+      openKeyboard(this);
     });
 
     // ปรับการตรวจจับคลิกนอก ให้ฉลาดขึ้น
@@ -52523,9 +52571,31 @@ window.Swal = (sweetalert2__WEBPACK_IMPORTED_MODULE_5___default());
 
       // ถ้าไม่ใช่คลิกที่ Input และ ไม่ได้คลิกบนคีย์บอร์ด/ปุ่มคีย์บอร์ด ถึงจะปิด
       if (!isInput && !isKeyboard && !isKey) {
-        $keyboardElement.removeClass('show-kb');
-        $content.css('transform', 'translateY(0)');
+        closeKeyboard();
       }
+    });
+
+    // ให้ keyboard.js เรียกใช้เพื่อคงสถานะตอนสลับ layout (เหมือน iPhone)
+    (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])(document).on('kiosk:keyboard-keep-open', function (event) {
+      var payload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      openKeyboard(payload.input || document.activeElement || null);
+    });
+    (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])(document).on('kiosk:keyboard-close', function () {
+      closeKeyboard();
+    });
+
+    // Add tactile-like visual feedback for touchscreen keyboard taps
+    (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])(document).on('touchstart mousedown', '.simple-keyboard .hg-button', function () {
+      (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])(this).removeClass('kb-release');
+      (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])(this).addClass('kb-pressed');
+    });
+    (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])(document).on('touchend touchcancel mouseup mouseleave', '.simple-keyboard .hg-button', function () {
+      var _this = this;
+      (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])(this).removeClass('kb-pressed');
+      (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])(this).addClass('kb-release');
+      setTimeout(function () {
+        return (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])(_this).removeClass('kb-release');
+      }, 240);
     });
   }
 
@@ -52536,8 +52606,7 @@ window.Swal = (sweetalert2__WEBPACK_IMPORTED_MODULE_5___default());
     if ($modalElement.length === 0) return;
 
     // ปิดคีย์บอร์ดเมื่อ Popup มา
-    $keyboardElement.removeClass('show-kb');
-    $content.css('transform', 'translateY(0)');
+    closeKeyboard();
     var $iconWrapper = (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])('#kioskAlertIconWrapper');
     var $icon = (0,jquery__WEBPACK_IMPORTED_MODULE_0__["default"])('#kioskAlertIcon');
     $iconWrapper.removeClass('alert-icon-error alert-icon-success');
@@ -52613,6 +52682,10 @@ __webpack_require__.r(__webpack_exports__);
 var KioskKeyboard = {
   instance: null,
   currentInput: null,
+  language: "en",
+  mode: "alpha",
+  // alpha | shift | number
+
   init: function init() {
     var _this = this;
     var selector = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '.kiosk-keyboard-input';
@@ -52627,18 +52700,18 @@ var KioskKeyboard = {
         return _this.updateButtonHighlight();
       },
       layout: {
-        'default': ['1 2 3 4 5 6 7 8 9 0', 'q w e r t y u i o p', 'a s d f g h j k l', '{shift} z x c v b n m {backspace}', '123 {lang} {space} {enter}'],
-        'english-up': ['1 2 3 4 5 6 7 8 9 0', 'Q W E R T Y U I O P', 'A S D F G H J K L', '{shift} Z X C V B N M {backspace}', '123 {lang} {space} {enter}'],
-        'english-num': ['1 2 3 4 5 6 7 8 9 0', '- / : ; ( ) ฿ & @ "', '#+= . , ? ! \' {backspace}', 'ABC {lang} {space} {enter}'],
-        'thai': ['ๅ / _ ภ ถ ุ ึ ค ต จ ข ช', 'ๆ ไ ำ พ ะ ั ี ร น ย บ ล', 'ฟ ห ก ด เ ้ ่ า ส ว ง ฃ', '{shift} ผ ป แ อ ิ ี ึ ท ม ใ ฝ {backspace}', '123 {lang} {space} {enter}'],
-        'thai-shift': ['+ ๑ ๒ ๓ ๔ ู ฿ ๕ ๖ ๗ ๘ ๙', '๐ " ฎ ฑ ธ ํ ๊ ณ ฯ ญ ฐ ,', 'ฤ ฆ ฏ โ ฌ ็ ๋ ษ ศ ซ .', '{shift} ( ) ฉ ฮ ฺ ์ ? ฒ ฬ ฦ {backspace}', '123 {lang} {space} {enter}'],
-        'thai-num': ['1 2 3 4 5 6 7 8 9 0', '- / : ; ( ) ฿ & @ "', '#+= . , ? ! \' {backspace}', 'กขค {lang} {space} {enter}']
+        'default': ['1 2 3 4 5 6 7 8 9 0', 'q w e r t y u i o p', 'a s d f g h j k l', '{shift} z x c v b n m {backspace}', '{numbers} {lang} {space} {enter}'],
+        'english-up': ['1 2 3 4 5 6 7 8 9 0', 'Q W E R T Y U I O P', 'A S D F G H J K L', '{shift} Z X C V B N M {backspace}', '{numbers} {lang} {space} {enter}'],
+        'english-num': ['1 2 3 4 5 6 7 8 9 0', '- / : ; ( ) ฿ & @ "', '#+= . , ? ! \' {backspace}', '{alpha_en} {lang} {space} {enter}'],
+        'thai': ['ๅ / _ ภ ถ ุ ึ ค ต จ ข ช', 'ๆ ไ ำ พ ะ ั ี ร น ย บ ล', 'ฟ ห ก ด เ ้ ่ า ส ว ง ฃ', '{shift} ผ ป แ อ ิ ี ึ ท ม ใ ฝ {backspace}', '{numbers} {lang} {space} {enter}'],
+        'thai-shift': ['+ ๑ ๒ ๓ ๔ ู ฿ ๕ ๖ ๗ ๘ ๙', '๐ " ฎ ฑ ธ ํ ๊ ณ ฯ ญ ฐ ,', 'ฤ ฆ ฏ โ ฌ ็ ๋ ษ ศ ซ .', '{shift} ( ) ฉ ฮ ฺ ์ ? ฒ ฬ ฦ {backspace}', '{numbers} {lang} {space} {enter}'],
+        'thai-num': ['1 2 3 4 5 6 7 8 9 0', '- / : ; ( ) ฿ & @ "', '#+= . , ? ! \' {backspace}', '{alpha_th} {lang} {space} {enter}']
       },
       display: {
-        '123': '123',
-        'ABC': 'ABC',
-        'กขค': 'กขค',
-        '{lang}': '🌐 TH/EN',
+        '{numbers}': '123',
+        '{alpha_en}': 'ABC',
+        '{alpha_th}': 'กขค',
+        '{lang}': 'TH/EN',
         '{shift}': '⇧',
         '{backspace}': '⌫',
         '{enter}': 'DONE ↵',
@@ -52649,6 +52722,7 @@ var KioskKeyboard = {
     // ตรวจจับการ Focus เพื่อ Set ค่า Input เริ่มต้นให้ Keyboard
     $(document).on('focus', selector, function (e) {
       _this.currentInput = e.target;
+      _this.syncLayout();
 
       // Sync ค่าจาก Input เข้าสู่ Keyboard ทันทีที่จิ้ม
       _this.instance.setOptions({
@@ -52658,50 +52732,63 @@ var KioskKeyboard = {
     });
   },
   handleOnKeyPress: function handleOnKeyPress(button) {
-    var currentLayout = this.instance.options.layoutName || "default";
-
-    // --- ส่วนสลับภาษา (กดแล้วเปลี่ยนทันที ไม่ปิดคีย์บอร์ด) ---
     if (button === "{lang}") {
-      var nextLang = currentLayout.includes("thai") ? "default" : "thai";
-      this.instance.setOptions({
-        layoutName: nextLang
-      });
-      return; // ออกจากฟังก์ชันทันที เพื่อไม่ให้ไปโดน Logic อื่น
-    }
-
-    // --- ส่วนสลับเป็นตัวเลข (กดแล้วเปลี่ยนทันที ไม่ปิดคีย์บอร์ด) ---
-    else if (button === "123") {
-      this.instance.setOptions({
-        layoutName: currentLayout.includes("thai") ? "thai-num" : "english-num"
-      });
+      this.language = this.language === "en" ? "th" : "en";
+      this.mode = this.mode === "shift" ? "alpha" : this.mode;
+      this.syncLayout();
+      this.keepKeyboardOpen();
       return;
     }
-
-    // --- ส่วนสลับกลับเป็นตัวอักษร (กดแล้วเปลี่ยนทันที ไม่ปิดคีย์บอร์ด) ---
-    else if (button === "ABC" || button === "กขค") {
-      this.instance.setOptions({
-        layoutName: button === "ABC" ? "default" : "thai"
-      });
+    if (button === "{numbers}") {
+      this.mode = "number";
+      this.syncLayout();
+      this.keepKeyboardOpen();
       return;
     }
-
-    // --- ส่วน Shift (กดแล้วเปลี่ยนทันที ไม่ปิดคีย์บอร์ด) ---
-    else if (button === "{shift}") {
-      var nextLayout = "default";
-      if (currentLayout === "default") nextLayout = "english-up";else if (currentLayout === "english-up") nextLayout = "default";else if (currentLayout === "thai") nextLayout = "thai-shift";else if (currentLayout === "thai-shift") nextLayout = "thai";
-      this.instance.setOptions({
-        layoutName: nextLayout
-      });
+    if (button === "{alpha_en}" || button === "{alpha_th}") {
+      this.mode = "alpha";
+      this.syncLayout();
+      this.keepKeyboardOpen();
       return;
     }
-
-    // --- ปุ่มเดียวที่สั่งปิดคือปุ่ม Enter / Done ---
-    else if (button === "{enter}") {
-      $('.simple-keyboard').removeClass('show-kb');
-      $('.checkin-content').css('transform', 'translateY(0)');
+    if (button === "{shift}") {
+      if (this.mode === "number") {
+        return;
+      }
+      this.mode = this.mode === "shift" ? "alpha" : "shift";
+      this.syncLayout();
+      this.keepKeyboardOpen();
+      return;
+    }
+    if (button === "{enter}") {
+      $(document).trigger('kiosk:keyboard-close');
       if (this.currentInput) {
         this.currentInput.blur(); // เอา focus ออกเพื่อให้คีย์บอร์ดไม่เด้งขึ้นมาใหม่ทันที
       }
+    }
+  },
+  syncLayout: function syncLayout() {
+    if (!this.instance) return;
+    var layoutName = "default";
+    if (this.mode === "number") {
+      layoutName = this.language === "th" ? "thai-num" : "english-num";
+    } else if (this.mode === "shift") {
+      layoutName = this.language === "th" ? "thai-shift" : "english-up";
+    } else {
+      layoutName = this.language === "th" ? "thai" : "default";
+    }
+    this.instance.setOptions({
+      layoutName: layoutName
+    });
+  },
+  keepKeyboardOpen: function keepKeyboardOpen() {
+    $(document).trigger('kiosk:keyboard-keep-open', {
+      input: this.currentInput
+    });
+    if (this.currentInput && document.activeElement !== this.currentInput) {
+      this.currentInput.focus({
+        preventScroll: true
+      });
     }
   },
   updateButtonHighlight: function updateButtonHighlight() {
@@ -52716,7 +52803,7 @@ var KioskKeyboard = {
       $('.hg-button[data-skbtn="{shift}"]').addClass('active-highlight');
     }
     if (layout === 'english-num' || layout === 'thai-num') {
-      $('.hg-button[data-skbtn="123"]').addClass('active-highlight');
+      $('.hg-button[data-skbtn="{numbers}"]').addClass('active-highlight');
     }
   },
   handleOnChange: function handleOnChange(input) {
