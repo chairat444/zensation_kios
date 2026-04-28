@@ -15,6 +15,8 @@
         data-checkin-url="{{ route('kiosk.checkin') }}"
         data-home-url="{{ route('kiosk.home') }}"
         data-csrf-token="{{ csrf_token() }}"
+        data-card-dispenser-enabled="{{ config('kiosk.card_dispenser.enabled') ? '1' : '0' }}"
+        data-card-dispenser-url="{{ config('kiosk.card_dispenser.http_url') }}"
     >
         {{-- Background Slider --}}
         <div class="swiper swiper-bg-fixed">

@@ -26,6 +26,9 @@ Route::prefix('kiosk')->group(function () {
     Route::get('/checkin', [KioskController::class, 'showCheckin'])->name('kiosk.checkin');
     Route::post('/checkin', [KioskController::class, 'guestCheckIn'])->name('kiosk.checkin');
 
+    Route::get('/card-dispenser-test', [KioskController::class, 'showCardDispenserTest'])
+        ->name('kiosk.card-dispenser-test');
+
     Route::get('/passport', function () {
         return view('kiosk.passport');
     });

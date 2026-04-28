@@ -16,6 +16,7 @@
 }
 
 .checkin-content {
+    position: relative;
     width: 100%;
     max-width: 800px;
     z-index: 10;

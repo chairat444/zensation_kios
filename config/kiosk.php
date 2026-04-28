@@ -18,4 +18,15 @@ return [
         'pass' => env('MIKROTIK_PASS'),
         'port' => env('MIKROTIK_PORT', 8728),
     ],
+
+    /*
+     * CRT-591-M001 card dispenser: browser calls a small local HTTP service that
+     * opens COM and sends frames (same pattern as VB print server on localhost).
+     * See scripts/crt591_dispenser_server.py
+     */
+    'card_dispenser' => [
+        'enabled' => env('KIOSK_CARD_DISPENSER_ENABLED', false),
+        'http_url' => env('KIOSK_CARD_DISPENSER_URL', 'http://127.0.0.1:59101/dispense'),
+        'unit_address' => (int) env('KIOSK_CARD_DISPENSER_ADDR', 0),
+    ],
 ];

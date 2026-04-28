@@ -59,6 +59,16 @@ class KioskController extends Controller
         return view('kiosk.checkin');
     }
 
+    /** Staff test page for CRT-591-M001 HTTP bridge (see scripts/crt591_dispenser_server.py). */
+    public function showCardDispenserTest()
+    {
+        return view('kiosk.card_dispenser_test', [
+            'dispenserEnabled' => (bool) config('kiosk.card_dispenser.enabled'),
+            'dispenserUrl' => (string) config('kiosk.card_dispenser.http_url'),
+            'dispenserAddr' => (int) config('kiosk.card_dispenser.unit_address'),
+        ]);
+    }
+
     public function showCheckout()
     {
         return view('kiosk.checkout');

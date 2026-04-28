@@ -232,7 +232,25 @@ $(function () {
         checkinUrl: checkinApp?.dataset.checkinUrl || "",
         homeUrl: checkinApp?.dataset.homeUrl || "/",
         csrfToken: checkinApp?.dataset.csrfToken || "",
+        cardDispenserEnabled: checkinApp?.dataset.cardDispenserEnabled === "1",
+        cardDispenserUrl: checkinApp?.dataset.cardDispenserUrl || "",
     };
+
+    function triggerCardDispenserAfterCheckin() {
+        if (!KIOSK_CONFIG.cardDispenserEnabled || !KIOSK_CONFIG.cardDispenserUrl) return;
+        const url = KIOSK_CONFIG.cardDispenserUrl.trim();
+        if (!url) return;
+        fetch(url, { method: "POST", mode: "cors", cache: "no-store" })
+            .then(function (r) { return r.json().catch(function () { return null; }); })
+            .then(function (j) {
+                if (!j || !j.ok) {
+                    console.warn("Card dispenser:", j && j.error ? j.error : "no response");
+                }
+            })
+            .catch(function (e) {
+                console.warn("Card dispenser request failed:", e);
+            });
+    }
 
     // --- ปรับแก้: URL ของ VB.NET Print Server (เปลี่ยนจาก ws เป็น http) ---
     const PRINT_SERVER_URL = "http://localhost:8081/print/";
@@ -416,8 +434,8 @@ $(function () {
     function connectTDKW() {
         wSocket = new WebSocket("ws://127.0.0.1:14820/TDKWAgent");
         wSocket.onopen = function () {
-            // If cable/service is connected, show green as requested.
-            setDeviceStatus('agent', 'online', 'Card Reader: Connected');
+            // Socket connected does not guarantee the USB reader is present.
+            setDeviceStatus('agent', 'idle', 'Card Reader: Agent Connected (Checking Hardware...)');
             wSocket.send(JSON.stringify({
                 Command: "SetAutoReadOptions",
                 AutoRead: true, IDNumberRead: true, IDTextRead: true, IDPhotoRead: true, IDATextRead: true
@@ -451,6 +469,9 @@ $(function () {
                 $('#lbInstruction').text("Please insert your ID card or Passport.");
                 $('#scanStatus').html('<span class="spinner-border spinner-border-sm me-2"></span> Awaiting Scan...');
                 $('#nextToPrintBtn').prop('disabled', true).css('background-color', '#3e3e3e');
+            }
+            else {
+                setDeviceStatus('agent', 'offline', 'Card Reader: Offline');
             }
         }
 
@@ -784,6 +805,7 @@ function putPassportToScreen(data) {
                 if (response.status === 'success') {
                     showStep('Print');
                     startPrintProgress(response.data);
+                    triggerCardDispenserAfterCheckin();
                 } else {
                     showPopup('error', response.message || "CHECK-IN ERROR");
                     $btn.prop('disabled', false).html('<span>COMPLETE CHECK-IN</span><i class="bi bi-house-check ms-2"></i>');
