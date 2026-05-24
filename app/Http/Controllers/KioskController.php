@@ -69,6 +69,18 @@ class KioskController extends Controller
         ]);
     }
 
+    /** Staff test page for Xeeder PMSif card read (see scripts/pmsif_card_reader_server.py). */
+    public function showCardReaderTest()
+    {
+        return view('kiosk.card_reader_test', [
+            'readerUrl' => (string) config('kiosk.card_reader.http_url'),
+            'writerUrl' => (string) config('kiosk.card_reader.write_url'),
+            'encoderHost' => (string) config('kiosk.card_reader.encoder_host'),
+            'encoderPort' => (int) config('kiosk.card_reader.encoder_port'),
+            'readCommand' => (string) config('kiosk.card_reader.read_command'),
+        ]);
+    }
+
     public function showCheckout()
     {
         return view('kiosk.checkout');

@@ -29,4 +29,17 @@ return [
         'http_url' => env('KIOSK_CARD_DISPENSER_URL', 'http://127.0.0.1:59101/dispense'),
         'unit_address' => (int) env('KIOSK_CARD_DISPENSER_ADDR', 0),
     ],
+
+    /*
+     * Xeeder hotel lock card reader (PMSif V1.723 TCP via local HTTP bridge).
+     * Requires ILockInterfaceOffline.exe and scripts/pmsif_card_reader_server.py.
+     * Use the PC LAN IP for PMSIF_HOST — 127.0.0.1:8000 may hit PHP, not the encoder.
+     */
+    'card_reader' => [
+        'http_url' => env('KIOSK_CARD_READER_URL', 'http://127.0.0.1:58002/read'),
+        'write_url' => env('KIOSK_CARD_WRITER_URL', 'http://127.0.0.1:58002/write'),
+        'encoder_host' => env('PMSIF_HOST', '127.0.0.1'),
+        'encoder_port' => (int) env('PMSIF_PORT', 8000),
+        'read_command' => env('PMSIF_READ_CMD', '00000E'),
+    ],
 ];

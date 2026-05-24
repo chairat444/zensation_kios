@@ -25,8 +25,9 @@
             <p class="welcome-subtitle">Zensation The Residence</p>
         </div>
 
-        <div class="text-center mb-3">
+        <div class="text-center mb-3 d-flex flex-column gap-1">
             <a href="{{ route('kiosk.card-dispenser-test') }}" class="text-white-50 small text-decoration-underline">ทดสอบเครื่องจ่ายบัตร (CRT-591)</a>
+            <a href="{{ route('kiosk.card-reader-test') }}" class="text-white-50 small text-decoration-underline">ทดสอบเครื่องอ่านคีย์การ์ด (PMSif)</a>
         </div>
 
         <div class="kiosk-grid">

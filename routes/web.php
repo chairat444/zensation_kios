@@ -29,6 +29,9 @@ Route::prefix('kiosk')->group(function () {
     Route::get('/card-dispenser-test', [KioskController::class, 'showCardDispenserTest'])
         ->name('kiosk.card-dispenser-test');
 
+    Route::get('/card-reader-test', [KioskController::class, 'showCardReaderTest'])
+        ->name('kiosk.card-reader-test');
+
     Route::get('/passport', function () {
         return view('kiosk.passport');
     });
